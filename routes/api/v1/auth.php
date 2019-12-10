@@ -13,20 +13,46 @@ use Illuminate\Http\Request;
 |
  */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Route::group([
+//     'prefix' => 'auth',
+// ], function () {
+//     Route::post('login', 'Api\AuthController@login');
+//     Route::post('signup', 'Api\AuthController@signup');
+
+//     Route::group([
+//         'middleware' => 'auth:api',
+//     ], function () {
+//         Route::get('logout', 'Api\AuthController@logout');
+//         Route::get('user', 'Api\AuthController@user');
+//     });
+// });
+
+// 'middleware' => 'api',
+Route::group([
+    'prefix' => 'auth',
+], function () {
+    Route::post('signup', 'Api\AuthController@signup');
+    Route::post('login', 'Api\AuthController@login');
 });
 
 Route::group([
     'prefix' => 'auth',
+    'middleware' => 'jwt'
 ], function () {
-    Route::post('login', 'Api\AuthController@login');
-    Route::post('signup', 'Api\AuthController@signup');
+    Route::post('logout', 'Api\AuthController@logout');
+    Route::post('refresh', 'Api\AuthController@refresh');
+    Route::post('me', 'Api\AuthController@me');
+    Route::get('/assign_roles', 'Api\AuthController@assignRoles');
 
-    Route::group([
-        'middleware' => 'auth:api',
-    ], function () {
-        Route::get('logout', 'Api\AuthController@logout');
-        Route::get('user', 'Api\AuthController@user');
-    });
+    // Route::put('/{id}', 'Api\PermissionsController@update');
+    // Route::delete('/{id}', 'Api\PermissionsController@destroy');
+    // Route::get('/', 'Api\PermissionsController@index');
+
+
+
+
 });

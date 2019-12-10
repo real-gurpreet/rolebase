@@ -4,12 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
+
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login']]);
+    }
+
     /**
      * Create user
      *
@@ -38,66 +49,90 @@ class AuthController extends Controller
     }
 
     /**
-     * Login user and create token
+     * Get a JWT via given credentials.
      *
-     * @param  [string] email
-     * @param  [string] password
-     * @param  [boolean] remember_me
-     * @return [string] access_token
-     * @return [string] token_type
-     * @return [string] expires_at
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login()
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-            'remember_me' => 'boolean',
-        ]);
         $credentials = request(['email', 'password']);
-        if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 401);
+
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = $request->user();
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-        if ($request->remember_me) {
-            $token->expires_at = Carbon::now()->addWeeks(1);
-        }
-
-        $token->save();
-        return response()->json([
-            'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse(
-                $tokenResult->token->expires_at
-            )->toDateTimeString(),
-        ]);
+        return $this->respondWithToken($token);
     }
 
     /**
-     * Logout user (Revoke the token)
+     * Get the authenticated User.
      *
-     * @return [string] message
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function logout(Request $request)
+    public function me()
     {
-        $request->user()->token()->revoke();
-        return response()->json([
-            'message' => 'Successfully logged out',
-        ]);
+        return response()->json(auth()->user());
     }
 
     /**
-     * Get the authenticated User
+     * Log the user out (Invalidate the token).
      *
-     * @return [json] user object
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function user(Request $request)
+    public function logout()
     {
-        return response()->json($request->user());
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+        ]);
+    }
+
+    public function assignRoles(Request $request)
+    {
+        $roles_id = $request->roles_id;
+        $roles = Role::find($roles_id);
+        $text = "";
+        if (count($roles) !== 0) {
+            $user = auth()->user();
+               foreach ($roles as $role) {
+                $data[] =$role->name;
+                $text .= $role->name . " , ";
+            }
+
+         // $user->assignRole($data);
+            $text = $user->name . " assigned to  " . $text . " roles";
+        } else {
+            $text = "no roles found";
+        }
+
+        return response()->json([
+            'response' => $user,
+        ], 200);
+
     }
 }

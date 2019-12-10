@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,7 @@ use Illuminate\Http\Request;
 
 // 'middleware' => 'api',
 Route::group([
-    'prefix' => 'auth',
+    'prefix' => 'auth'
 ], function () {
     Route::post('signup', 'Api\AuthController@signup');
     Route::post('login', 'Api\AuthController@login');

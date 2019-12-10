@@ -22,7 +22,7 @@ class RolesController extends Controller
             'role' => $roles,
             'response' => 'success'
 
-        ],200);
+        ], 200);
     }
 
     /**
@@ -33,13 +33,13 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $name = $request->name ;
+        $name = $request->name;
         $role = Role::create(['name' => $name]);
         return response()->json([
             'role' => $name,
             'response' => 'success'
 
-        ],201);
+        ], 201);
     }
 
 
@@ -56,7 +56,7 @@ class RolesController extends Controller
             'role' => $roles,
             'response' => 'success'
 
-        ],200);
+        ], 200);
     }
 
     /**
@@ -75,7 +75,7 @@ class RolesController extends Controller
             'role' => $roles,
             'response' => 'success'
 
-        ],200);
+        ], 200);
     }
 
     /**
@@ -93,6 +93,6 @@ class RolesController extends Controller
             'role' => $roles,
             'response' => 'success'
 
-        ],200);
+        ], 200);
     }
 }

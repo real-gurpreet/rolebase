@@ -16,10 +16,16 @@
                         <label for="exampleInputEmail1">Add Role</label>
                         <input type="text" class="form-control" id="exampleInputEmail1" placeholder="role">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Add roels</button>
                     </form>
 
                     <table class="table table-bordered">
+                        <tr>
+                            <td>id</td>
+                            <td>name</td>
+                            <td>edit</td>
+                            <td>delete</td>
+                        </tr>
 
                     </table>
             </div>

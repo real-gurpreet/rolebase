@@ -11,6 +11,8 @@ use Spatie\Permission\Models\Role;
 class AuthController extends Controller
 {
 
+
+
     /**
      * Create a new AuthController instance.
      *
@@ -18,7 +20,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('jwt', ['except' => ['login']]);
     }
 
     /**
@@ -119,12 +121,12 @@ class AuthController extends Controller
         $text = "";
         if (count($roles) !== 0) {
             $user = auth()->user();
-               foreach ($roles as $role) {
-                $data[] =$role->name;
+            foreach ($roles as $role) {
+                $data[] = $role->name;
                 $text .= $role->name . " , ";
             }
 
-         // $user->assignRole($data);
+            // $user->assignRole($data);
             $text = $user->name . " assigned to  " . $text . " roles";
         } else {
             $text = "no roles found";
@@ -133,6 +135,5 @@ class AuthController extends Controller
         return response()->json([
             'response' => $user,
         ], 200);
-
     }
 }

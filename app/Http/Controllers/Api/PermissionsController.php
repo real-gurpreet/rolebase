@@ -4,20 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-
-class PermissionsController extends Controller
-{
-=======
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
 {
 
->>>>>>> pull changes
     /**
      * Display a listing of the resource.
      *
@@ -25,12 +17,6 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-<<<<<<< HEAD
-        $permission = Permission::all();
-        return response()->json([
-            'permission' => $permission,
-            'response' => 'success',
-=======
         $permissions = Permission::all();
         if (count($permissions) == 0) {
             $permissions = "no permission add yet";
@@ -38,15 +24,10 @@ class PermissionsController extends Controller
         return response()->json([
             'permissions' => $permissions,
             'response' => 'success'
->>>>>>> pull changes
 
         ], 200);
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> pull changes
     /**
      * Store a newly created resource in storage.
      *
@@ -59,20 +40,13 @@ class PermissionsController extends Controller
         $permission = Permission::create(['name' => $name]);
         return response()->json([
             'permission' => $name,
-<<<<<<< HEAD
-            'response' => 'success',
-=======
             'response' => 'success'
->>>>>>> pull changes
 
         ], 201);
     }
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> pull changes
     /**
      * Show the form for editing the specified resource.
      *
@@ -83,13 +57,8 @@ class PermissionsController extends Controller
     {
         $permission = Permission::find($id);
         return response()->json([
-<<<<<<< HEAD
-            'role' => $permission,
-            'response' => 'success',
-=======
             'permission' => $permission,
             'response' => 'success'
->>>>>>> pull changes
 
         ], 200);
     }
@@ -107,13 +76,8 @@ class PermissionsController extends Controller
         $permission->name = $request->name;
         $permission->save();
         return response()->json([
-<<<<<<< HEAD
-            'role' => $permission,
-            'response' => 'success',
-=======
             'permission' => $permission,
             'response' => 'success'
->>>>>>> pull changes
 
         ], 200);
     }
@@ -126,7 +90,6 @@ class PermissionsController extends Controller
      */
     public function destroy($id)
     {
-<<<<<<< HEAD
 
         $permission = Permission::find($id);
         $permission->delete();
@@ -266,25 +229,3 @@ class PermissionsController extends Controller
 
     }
 }
-=======
-        $permission = Permission::find($id);
-        $permission->delete();
-        return response()->json([
-            'permission' => $permission,
-            'response' => 'deleted'
-
-        ], 200);
-    }
-
-    public function permissionAssignToRole(Request $request)
-    {
-        $roleId = $request->id;
-        $role = Role::find($roleId);
-        return response()->json([
-            'role' => $role,
-            'response' => 'deleted'
-
-        ], 200);
-    }
-}
->>>>>>> pull changes

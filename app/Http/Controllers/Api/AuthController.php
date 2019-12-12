@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
@@ -114,26 +114,32 @@ class AuthController extends Controller
         ]);
     }
 
-    public function assignRoles(Request $request)
+    public function assignUserRoles(Request $request)
     {
         $roles_id = $request->roles_id;
         $roles = Role::find($roles_id);
         $text = "";
         if (count($roles) !== 0) {
-            $user = auth()->user();
+            $user = auth()->user()->assignRole($roles);
             foreach ($roles as $role) {
-                $data[] = $role->name;
                 $text .= $role->name . " , ";
             }
-
-            // $user->assignRole($data);
             $text = $user->name . " assigned to  " . $text . " roles";
         } else {
             $text = "no roles found";
         }
 
         return response()->json([
-            'response' => $user,
+            'response' => $text,
         ], 200);
+    }
+
+    public function checkPermission()
+    {
+
+        // $permissions =  Auth()->user()->getPermissionsViaRoles();
+        //     return response()->json([
+        //     'response' => $permissions,
+        // ], 200);
     }
 }

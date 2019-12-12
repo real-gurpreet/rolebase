@@ -47,7 +47,9 @@ Route::group([
     Route::post('logout', 'Api\AuthController@logout');
     Route::post('refresh', 'Api\AuthController@refresh');
     Route::post('me', 'Api\AuthController@me');
-    Route::get('/assign_roles', 'Api\AuthController@assignRoles');
+    Route::post('/assign_roles', 'Api\AuthController@assignUserRoles');
+    Route::post('/check_permission', 'Api\AuthController@checkPermission');
+
 
     // Route::put('/{id}', 'Api\PermissionsController@update');
     // Route::delete('/{id}', 'Api\PermissionsController@destroy');

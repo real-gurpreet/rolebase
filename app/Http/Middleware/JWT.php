@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use JWTAuth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class JWT
 {
@@ -16,8 +18,10 @@ class JWT
      */
     public function handle($request, Closure $next)
     {
-        JWTAuth::parseToken()->authenticate();
+        $user = JWTAuth::parseToken()->authenticate();
 
+        echo json_encode($user->getRoleNames());
+        echo json_encode($user->getPermissionsViaRoles());
         return $next($request);
     }
 }

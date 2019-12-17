@@ -20,8 +20,8 @@ class JWT
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        echo json_encode($user->getRoleNames());
-        echo json_encode($user->getPermissionsViaRoles());
+        // echo json_encode($user->getRoleNames());
+        // echo json_encode($user->getPermissionsViaRoles());
         return $next($request);
     }
 }

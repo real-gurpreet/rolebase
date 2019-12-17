@@ -51,11 +51,11 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof TokenInvalidException) {
-            return response()->json(["error" => get_class($exception)." : Token is Invalid"], 400);
+            return response()->json(["error" => get_class($exception)." : Token is Invalid"], 401);
         } else if ($exception instanceof TokenExpiredException) {
-            return response()->json(["error" => get_class($exception)." : Token is Expired"], 400);
+            return response()->json(["error" => get_class($exception)." : Token is Expired"], 401);
         } else if ($exception instanceof JWTException) {
-            return response()->json(["error" => get_class($exception)." : Token is not applied"], 400);
+            return response()->json(["error" => get_class($exception)." : Token is not applied"], 401);
         } else if ($exception instanceof NotFoundHttpException) {
             return response()->json(["error" => get_class($exception)." : Resource url is not found"], 404);
         }if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {

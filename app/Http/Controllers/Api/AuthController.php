@@ -20,7 +20,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('jwt', ['except' => ['login']]);
+        $this->middleware('jwt', ['except' => ['signup','login']]);
     }
 
     /**
@@ -116,18 +116,19 @@ class AuthController extends Controller
 
     public function assignUserRoles(Request $request)
     {
+
         $roles_id = $request->roles_id;
         $roles = Role::find($roles_id);
-        $text = "";
-        if (count($roles) !== 0) {
-            $user = auth()->user()->assignRole($roles);
-            foreach ($roles as $role) {
-                $text .= $role->name . " , ";
-            }
-            $text = $user->name . " assigned to  " . $text . " roles";
-        } else {
-            $text = "no roles found";
-        }
+        $text = "hello";
+        // if (count($roles) !== 0) {
+        //     $user = auth()->user()->assignRole($roles);
+        //     foreach ($roles as $role) {
+        //         $text .= $role->name . " , ";
+        //     }
+        //     $text = $user->name . " assigned to  " . $text . " roles";
+        // } else {
+        //     $text = "no roles found";
+        // }
 
         return response()->json([
             'response' => $text,
@@ -137,9 +138,9 @@ class AuthController extends Controller
     public function checkPermission()
     {
 
-        // $permissions =  Auth()->user()->getPermissionsViaRoles();
-        //     return response()->json([
-        //     'response' => $permissions,
-        // ], 200);
+        $permissions =  Auth()->user()->getPermissionsViaRoles();
+            return response()->json([
+            'response' => $permissions,
+        ], 200);
     }
 }

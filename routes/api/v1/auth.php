@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\Route;
 //     });
 // });
 
-// 'middleware' => 'api',
 Route::group([
     'prefix' => 'auth'
 ], function () {

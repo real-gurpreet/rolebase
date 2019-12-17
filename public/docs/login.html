@@ -1,0 +1,39 @@
+<h6>Input parameter</h6>
+<table align="center" border='1'>
+    <tr>
+        <td>Column Name</td><td>Data type</td>
+    </tr>
+    <tr>
+        <td>email</td> <td>String</td>
+    </tr>
+    <tr>
+        <td>password</td><td>String (upper case,lower case,special character</td>
+    </tr>
+</table>
+<h6>Http Status Code</h6>
+<table  align="center" border='1'>
+    <caption>Success</caption>
+    <tr>
+        <td>Status code</td> <td>Response</td>
+    </tr>
+    <tr>
+        <td>200 Ok</td>
+
+        <td>{
+                "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMVwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTU3NjU3NjkwNCwiZXhwIjoxNTc2NTgwNTA0LCJuYmYiOjE1NzY1NzY5MDQsImp0aSI6Iml6cHhqNEJNcU0zVjVaVkwiLCJzdWIiOjQsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.2IYBlQR41_uUOKbUJFS5tTf2jMkalh7Y3vIOSbhC1UQ",
+                "token_type": "bearer",
+                "expires_in": 3600
+            }</td>
+    </tr>
+</table>
+
+<table  align="center" border='1'>
+    <caption>Error</caption>
+    <tr>
+        <td>Status code</td> <td>Message</td>
+    </tr>
+    <tr>
+        <td>401 Unauthorized</td>
+        <td>Unauthorized</td>
+    </tr>
+</table>

@@ -9,6 +9,18 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //$this->middleware('jwt', ['except' => ['signup','login']]);
+
+
+    }
+
 
     /**
      * Display a listing of the resource.

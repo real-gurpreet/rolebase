@@ -11,8 +11,6 @@ use Spatie\Permission\Models\Permission;
 class AuthController extends Controller
 {
 
-
-
     /**
      * Create a new AuthController instance.
      *

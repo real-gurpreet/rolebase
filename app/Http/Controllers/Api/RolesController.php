@@ -1,14 +1,28 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use JWTAuth;
 
 class RolesController extends Controller
 {
+     /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if(!$this->role =  $user->hasRole('admin')){
+              abort(403, "only admin allow");
+            }
+
+    }
 
     /**
      * Display a listing of the resource.
@@ -33,8 +47,8 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $name = $request->name;
-        $role = Role::create(['name' => $name]);
+       $name = $request->name;
+        Role::create(['name' => $name]);
         return response()->json([
             'role' => $name,
             'response' => 'success'

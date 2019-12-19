@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use JWTAuth;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionsController extends Controller
 {
@@ -16,11 +17,12 @@ class PermissionsController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('jwt', ['except' => ['signup','login']]);
-
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$this->role = $user->hasRole('admin')) {
+            abort(403, "only admin allow");
+        }
 
     }
-
 
     /**
      * Display a listing of the resource.
@@ -35,7 +37,7 @@ class PermissionsController extends Controller
         }
         return response()->json([
             'permissions' => $permissions,
-            'response' => 'success'
+            'response' => 'success',
 
         ], 200);
     }
@@ -48,16 +50,17 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'bail|required|string|max:255',
+        ]);
         $name = $request->name;
         $permission = Permission::create(['name' => $name]);
         return response()->json([
             'permission' => $name,
-            'response' => 'success'
+            'response' => 'success',
 
         ], 201);
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -67,10 +70,10 @@ class PermissionsController extends Controller
      */
     public function edit($id)
     {
-        $permission = Permission::find($id);
+        $permission = Permission::find($id) ?? "no permission found";
         return response()->json([
             'permission' => $permission,
-            'response' => 'success'
+            'response' => 'success',
 
         ], 200);
     }
@@ -82,14 +85,18 @@ class PermissionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $permission = Permission::find($id);
+        $request->validate([
+            'name' => 'bail|required|string',
+            'id' => 'bail|required|exists:permissions',
+        ]);
+        $permission = Permission::find($request->id);
         $permission->name = $request->name;
         $permission->save();
         return response()->json([
             'permission' => $permission,
-            'response' => 'success'
+            'response' => 'success',
 
         ], 200);
     }
@@ -100,10 +107,13 @@ class PermissionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
+        $request->validate([
+            'id' => 'bail|required|exists:permissions',
+        ]);
 
-        $permission = Permission::find($id);
+        $permission = Permission::find($request->id);
         $permission->delete();
         return response()->json([
             'role' => $permission,
@@ -114,23 +124,23 @@ class PermissionsController extends Controller
 
     public function assignPermissionToRole(Request $request)
     {
+
+        $request->validate([
+            'role_id' => "bail|required|exists:roles,id",
+            'permssion_id' => "bail|required|exists:permissions,id",
+        ]);
+
         $roleId = $request->role_id;
         $permissionId = $request->permssion_id;
         $role = Role::find($roleId);
         $permission = Permission::find($permissionId);
 
-        $message = "";
-        if ($role == null) {
-            $message = "role does not exists";
-        } else if ($permission == null) {
-            $message = "permission does not exists";
-        }
-        if (!$message) {
+        if ($role != null && $permission != null) {
             //add permission to role
             $message = $role->givePermissionTo($permission);
             //add role to permission
             //$message = $permission->assignRole($role);
-            $message = "Permission : '". $permission-> name . "' asign permission to  Role : '". $role-> name ."'";
+            $message = "Permission : '" . $permission->name . "' asign permission to  Role : '" . $role->name . "'";
         }
 
         return response()->json([
@@ -143,6 +153,12 @@ class PermissionsController extends Controller
 
     public function assignMultiplePermissionToRole(Request $request)
     {
+
+        $request->validate([
+            'role_id' => "bail|required|exists:roles,id",
+            'permssion_id' => "bail|required|exists:permissions,id",
+        ]);
+
         $roleId = $request->role_id;
         $permissionId = $request->permssion_id;
 
@@ -150,50 +166,43 @@ class PermissionsController extends Controller
         $permission = Permission::find($permissionId);
 
         $message = "";
-        if ($role == null) {
-            $message = "role does not exists";
-        } else if ($permission == null) {
-            $message = "permission does not exists";
-        }
-        if (!$message) {
+        if ($role != null && $permission != null) {
             //add multiple permission to role
             $message = $role->syncPermissions($permission);
             //add multiple roles to permission
             //$message = $permission->syncRoles($roles);
-            $text = "" ;
-            foreach($permission as $perm){
-                  $text .= $perm->name . " , ";
+            $text = "";
+            foreach ($permission as $perm) {
+                $text .= $perm->name . " , ";
             }
-             $message = "Permission : '". $text . "' asign permission to  Role : '". $role-> name ."'";
+            $message = "Permission : '" . $text . "' asign permission to  Role : '" . $role->name . "'";
         }
 
         return response()->json([
-
             'response' => $message,
-
         ], 200);
 
     }
 
     public function revokePermissionToRole(Request $request)
     {
+        $request->validate([
+            'role_id' => "bail|required|exists:roles,id",
+            'permssion_id' => "bail|required|exists:permissions,id",
+        ]);
+
         $roleId = $request->role_id;
         $permissionId = $request->permssion_id;
         $role = Role::find($roleId);
         $permission = Permission::find($permissionId);
 
         $message = "";
-        if ($role == null) {
-            $message = "role does not exists";
-        } else if ($permission == null) {
-            $message = "permission does not exists";
-        }
-        if (!$message) {
+         if ($role != null && $permission != null) {
             //add permission to role
-            $message =  $permission->removeRole($role);
+            $message = $permission->removeRole($role);
             //add role to permission
             //$message =   $role->revokePermissionTo($permission);;
-            $message = "Permission : '". $permission-> name . "' remove permission to  Role : '". $role-> name ."'";
+            $message = "Permission : '" . $permission->name . "' remove permission to  Role : '" . $role->name . "'";
         }
 
         return response()->json([
@@ -204,9 +213,12 @@ class PermissionsController extends Controller
 
     }
 
-
     public function revokeMultiplePermissionToRole(Request $request)
     {
+        $request->validate([
+            'role_id' => "bail|required|exists:roles,id",
+            'permssion_id' => "bail|required|exists:permissions,id",
+        ]);
         $roleId = $request->role_id;
         $permissionId = $request->permssion_id;
 
@@ -214,23 +226,16 @@ class PermissionsController extends Controller
         $permission = Permission::find($permissionId);
 
         $message = "";
-        if ($role == null) {
-            $message = "role does not exists";
-        } else if ($permission == null) {
-            $message = "permission does not exists";
-        }
-        if (!$message) {
-
-
+        if ($role != null && $permission != null) {
             //remove multiple permission to role
-            $message =  $role->revokePermissionTo($permission);
+            $message = $role->revokePermissionTo($permission);
             //remove multiple roles to permission
             //$message = $permission->removeRole($role);
-            $text = "" ;
-            foreach($permission as $perm){
-                  $text .= $perm->name . " , ";
+            $text = "";
+            foreach ($permission as $perm) {
+                $text .= $perm->name . " , ";
             }
-             $message = "Permission : '". $text . "' revoke permission to  Role : '". $role-> name ."'";
+            $message = "Permission : '" . $text . "' revoke permission to  Role : '" . $role->name . "'";
         }
 
         return response()->json([

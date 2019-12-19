@@ -47,6 +47,10 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'name' => 'bail|required|string|max:255',
+        ]);
        $name = $request->name;
         Role::create(['name' => $name]);
         return response()->json([
@@ -65,7 +69,7 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        $roles = Role::find($id);
+        $roles = Role::find($id)??"no role found";
         return response()->json([
             'role' => $roles,
             'response' => 'success'
@@ -80,9 +84,14 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $roles = Role::find($id);
+
+        $request->validate([
+            'name' => 'bail|required|string',
+            'id'=> 'bail|required|exists:roles'
+        ]);
+        $roles = Role::find($request->id);
         $roles->name = $request->name;
         $roles->save();
         return response()->json([
@@ -98,14 +107,16 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-
-        $roles = Role::find($id);
+        $request->validate([
+            'id'=> 'bail|required|exists:roles'
+        ]);
+        $roles = Role::find($request->id);
         $roles->delete();
         return response()->json([
             'role' => $roles,
-            'response' => 'success'
+            'response' => 'deleted'
 
         ], 200);
     }

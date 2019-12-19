@@ -108,25 +108,32 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => auth()->factory()->getTTL() * 60 *10, // 10 hr
         ]);
     }
 
     public function assignUserRoles(Request $request)
     {
+        $request->validate([
+            'role_id' => "bail|required|exists:roles,id",
+            'user_id' => "bail|required|exists:users,id",
+        ]);
 
-        $roles_id = $request->roles_id;
+        $user_id = $request->user_id;
+        $roles_id = $request->role_id;
+        $user = User::find($user_id);
         $roles = Role::find($roles_id);
-        $text = "hello";
-        // if (count($roles) !== 0) {
-        //     $user = auth()->user()->assignRole($roles);
-        //     foreach ($roles as $role) {
-        //         $text .= $role->name . " , ";
-        //     }
-        //     $text = $user->name . " assigned to  " . $text . " roles";
-        // } else {
-        //     $text = "no roles found";
-        // }
+
+        $text = "";
+        if (count($roles) !== 0) {
+            $user->assignRole($roles);
+            foreach ($roles as $role) {
+                $text .= $role->name . " , ";
+            }
+            $text = $user->name . " assigned to  " . $text . " roles";
+        } else {
+            $text = "no roles found";
+        }
 
         return response()->json([
             'response' => $text,
@@ -135,7 +142,6 @@ class AuthController extends Controller
 
     public function checkPermission()
     {
-
         $permissions =  Auth()->user()->getPermissionsViaRoles();
             return response()->json([
             'response' => $permissions,

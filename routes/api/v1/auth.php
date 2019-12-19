@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::group([
-    'prefix' => 'auth'
+    'prefix' => 'auth',
 ], function () {
     Route::post('signup', 'Api\AuthController@signup');
     Route::post('login', 'Api\AuthController@login');

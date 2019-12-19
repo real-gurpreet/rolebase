@@ -1,0 +1,42 @@
+<h6>Input parameter</h6>
+<table align="center" border='1'>
+    <tr>
+        <td><h6>Column Name</h6></td><td><h6></h6>Data type</h6></td>
+    </tr>
+    <tr>
+        <td>name</td> <td>String</td>
+    </tr>
+    <tr>
+        <td>id</td> <td>integer</td>
+    </tr>
+
+</table>
+    <h6>Http Status Code</h6>
+<table  align="center" border='1'>
+    <caption>Success</caption>
+    <tr>
+        <td>Status code</td> <td>Response</td>
+    </tr>
+    <tr>
+        <td>201 Created</td>
+        <td>{
+                "role": "member",
+                "response": "success"
+            }</td>
+    </tr>
+</table>
+
+<table  align="center" border='1'>
+    <caption>Error</caption>
+    <tr>
+        <td>Status code</td> <td>Message</td>
+    </tr>
+    <tr>
+            <td>401 Unauthorized</td>
+           <td>Tymon\\JWTAuth\\Exceptions\\TokenExpiredException : Token is Expired</td>
+       </tr>
+       <tr>
+                <td>401 Unauthorized</td>
+               <td>Tymon\\JWTAuth\\Exceptions\\TokenInvalidException : Token is Invalid</td>
+           </tr>
+</table>
